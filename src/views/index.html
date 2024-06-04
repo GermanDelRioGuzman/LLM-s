@@ -25,44 +25,38 @@
         var input = document.querySelector('.input-box input');
         var chatBox = document.querySelector('.chat-box');
 
-        // Agrega un event listener al botón para el evento de clic
         button.addEventListener('click', function () {
-            // Toma el valor del input
             var inputValue = input.value;
+            if (inputValue.trim() === '') return;  // Evita enviar mensajes vacíos
 
-            // Crea un nuevo elemento div y asigna el valor del input a su contenido
-            var newMessage = document.createElement('div');
-            newMessage.textContent = inputValue;
+            // Muestra el mensaje del usuario en la interfaz
+            var userMessage = document.createElement('div');
+            userMessage.textContent = inputValue;
+            userMessage.className = 'sent';  // Añade una clase para estilos
+            chatBox.appendChild(userMessage);
 
-            // Agrega el nuevo div al div de chat box
-            chatBox.appendChild(newMessage);
-
-
-
-            // Haz una solicitud POST a la ruta /api/chat de tu servidor
+            // Haz la solicitud POST
             fetch('/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    userQuestion: inputValue
-                })
+                body: JSON.stringify({ userQuestion: inputValue })
             })
                 .then(response => response.json())
                 .then(data => {
-                    // Crea un nuevo div y asigna el mensaje de la respuesta a su contenido
-                    var responseMessage = document.createElement('div');
-                    responseMessage.textContent = data.choices[0].message.content;
-
-                    // Agrega el nuevo div al div de chat box
-                    chatBox.appendChild(responseMessage);
-                });
+                    // Muestra la respuesta del bot
+                    var botMessage = document.createElement('div');
+                    botMessage.textContent = data.botResponse;  // Accede correctamente a la respuesta
+                    botMessage.className = 'received';  // Añade una clase para estilos
+                    chatBox.appendChild(botMessage);
+                })
+                .catch(error => console.error('Error:', error));  // Añade manejo de errores
 
             // Limpia el input
             input.value = '';
-            
         });
+
 
     </script>
 </body>
