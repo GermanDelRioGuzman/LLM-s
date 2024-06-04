@@ -9,13 +9,14 @@ body {
 }
 
 .chat-container {
-    width: 300px;
+    width: 100%;
     background-color: white;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border-radius: 10px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 header {
@@ -55,6 +56,9 @@ header {
 }
 
 .input-box {
+    position: fixed;
+    bottom: 0;
+    width: 100%; /* Asegúrate de que la caja de entrada se extienda a lo largo de toda la pantalla */
     display: flex;
     padding: 10px;
     background-color: #f0f0f0;

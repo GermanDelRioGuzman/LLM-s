@@ -37,8 +37,7 @@
             // Agrega el nuevo div al div de chat box
             chatBox.appendChild(newMessage);
 
-            // Limpia el input
-            input.value = '';
+
 
             // Haz una solicitud POST a la ruta /api/chat de tu servidor
             fetch('/api/chat', {
@@ -59,6 +58,10 @@
                     // Agrega el nuevo div al div de chat box
                     chatBox.appendChild(responseMessage);
                 });
+
+            // Limpia el input
+            input.value = '';
+            
         });
 
     </script>

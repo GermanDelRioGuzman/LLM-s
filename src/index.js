@@ -34,7 +34,7 @@ app.listen(port, () => { //escucho el puerto
     console.log(`Server is running on port http://localhost:${port}`) //imprimo en consola
 })
 
-let history = []; //historial de la conversación
+let history = []; //creo un arreglo vacio
 
 app.post('/api/chat', async (req,res)=> { 
     if(!req.body || !req.body.userQuestion){  
@@ -57,12 +57,11 @@ app.post('/api/chat', async (req,res)=> {
         history.push({role: "bot", content: botResponse}); 
 
         res.json({ 
-            botResponse,
-            history});
-    }
-    catch (error){
-        console.error(error);
-        res.status(500).json({error: "Internal Server Error"});
+            botResponse: botResponse
+        });
+
+    } catch(error){ 
+        console.error("Error from openai api", error); 
     }
 });
 
@@ -70,3 +69,5 @@ app.post('/api/chat', async (req,res)=> {
 }
 
 main() //llamo a la función main
+
+
