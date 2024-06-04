@@ -36,42 +36,37 @@ app.listen(port, () => { //escucho el puerto
 
 let history = []; //historial de la conversación
 
-app.post('/api/chat', async (req,res)=> { //ruta para el chat
-   
-    if(!req.body || !req.body.userQuestion){  //si no hay un mensaje en el body
-        return res.status(400).json({error: "Bad Request or missing request"}); //devuelvo un error
+app.post('/api/chat', async (req,res)=> { 
+    if(!req.body || !req.body.userQuestion){  
+        return res.status(400).json({error: "Bad Request or missing request"}); 
     }
 
-    let userQuestion = req.body.userQuestion; //el mensaje que viene del body
+    let userQuestion = req.body.userQuestion; 
 
-    let messages = [ {role: "user", content:userQuestion }]; //  el mensaje que viene del usuario
+    let messages = [ {role: "user", content:userQuestion }];
 
-    try { //intento hacer una petición a la api de openai
-        const completion = await openai.chat.completions.create({ //creo una conversación
-            model :"gpt-3.5-turbo", //modelo
-            messages:messages //mensajes
+    try { 
+        const completion = await openai.chat.completions.create({ 
+            model :"gpt-3.5-turbo", 
+            messages:messages 
         });
 
-        let botResponse = completion.choices[0].message; //la respuesta del bot
+        let botResponse = completion.choices[0].message.content; 
 
-        history.push(messages[0]); //guardo el mensaje del usuario en el historial
-        history.push({role: "bot", content: botResponse}); //guardo la respuesta en el historial
+        history.push(messages[0]); 
+        history.push({role: "bot", content: botResponse}); 
 
-        res.json({ //devuelvo un json con el mensaje
+        res.json({ 
             botResponse,
             history});
-
-    } catch{ //si hay un error
-        console.error("Error form openai api", error); //imprimo en consola
-        res.status(500).json({error: "Internal Server Error"}) //devuelvo un error
-
     }
-
+    catch (error){
+        console.error(error);
+        res.status(500).json({error: "Internal Server Error"});
+    }
 });
 
 
 }
 
 main() //llamo a la función main
-
-

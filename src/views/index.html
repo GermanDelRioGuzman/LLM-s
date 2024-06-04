@@ -1,20 +1,67 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<title>Chat con Bot</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Chat con Bot</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div class="chat-container">
-    <header>Conversation with Bot</header>
-    <div class="chat-box">
-        
+    <div class="chat-container">
+        <header>Conversation with Bot</header>
+        <div class="chat-box">
+
+        </div>
+        <div class="input-box">
+            <input type="text" placeholder="Write your message here">
+            <button>↗️</button>
+        </div>
     </div>
-    <div class="input-box">
-        <input type="text" placeholder="Write your message here">
-        <button>↗️</button>
-    </div>
-</div>
+
+    <script>
+        // Selecciona el botón, el input y el div de chat box
+        var button = document.querySelector('.input-box button');
+        var input = document.querySelector('.input-box input');
+        var chatBox = document.querySelector('.chat-box');
+
+        // Agrega un event listener al botón para el evento de clic
+        button.addEventListener('click', function () {
+            // Toma el valor del input
+            var inputValue = input.value;
+
+            // Crea un nuevo elemento div y asigna el valor del input a su contenido
+            var newMessage = document.createElement('div');
+            newMessage.textContent = inputValue;
+
+            // Agrega el nuevo div al div de chat box
+            chatBox.appendChild(newMessage);
+
+            // Limpia el input
+            input.value = '';
+
+            // Haz una solicitud POST a la ruta /api/chat de tu servidor
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userQuestion: inputValue
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Crea un nuevo div y asigna el mensaje de la respuesta a su contenido
+                    var responseMessage = document.createElement('div');
+                    responseMessage.textContent = data.choices[0].message.content;
+
+                    // Agrega el nuevo div al div de chat box
+                    chatBox.appendChild(responseMessage);
+                });
+        });
+
+    </script>
 </body>
+
 </html>
