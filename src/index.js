@@ -11,6 +11,8 @@ const port=3000; //creo el puerto
 //middelwares
 app.use(cors());    //uso cors
 app.use(bodyParser.json()); //uso body-parser
+app.use(bodyParser.json()); //uso body-parser
+
 
 require('dotenv').config();   
 //esto es para que se pueda leer el archivo .env
@@ -25,6 +27,8 @@ const openai= new OpenAI({
 //función asincrona 
 async function main(){
 
+app.use(express.static('views'));
+app.use(express.json());
 
 app.listen(port, () => { //escucho el puerto
     console.log(`Server is running on port http://localhost:${port}`) //imprimo en consola
