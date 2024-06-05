@@ -51,6 +51,47 @@ function saveMessage(userMessage, botResponse) {
         console.log(`A row has been inserted with rowid ${this.lastID}`);
     });
 }
+//here we start the database
+app.use(bodyParser.urlencoded({ extended: false }));
+
+db.run(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    password TEXT
+)`, (err) => {
+    if (err) {
+        console.error(err.message);
+    }
+});
+
+app.post('/submit-your-login-form', (req, res) => {
+    let sql = `SELECT * FROM users WHERE username = ? AND password = ?`;
+    db.get(sql, [req.body.username, req.body.password], (err, row) => {
+        if (err) {
+            return console.error(err.message);
+        }
+        if (row) {
+            res.redirect('/home.html');
+        } else {
+            res.send('Invalid username or password');
+        }
+    });
+});
+
+app.post('/submit-your-registration-form', (req, res) => {
+    let sql = `INSERT INTO users (username, password) VALUES (?, ?)`;
+    db.run(sql, [req.body.username, req.body.password], (err) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      res.redirect('/home.html');
+    });
+  });
+
+app.listen(5050, () => {
+    console.log('Server started on port 3000');
+});
+
 
 //función asincrona 
 async function main() {

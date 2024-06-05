@@ -1,64 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <title>Chat con Bot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <div class="chat-container">
-        <header>Conversation with Bot</header>
-        <div class="chat-box">
-
-        </div>
-        <div class="input-box">
-            <input type="text" placeholder="Write your message here">
-            <button>↗️</button>
-        </div>
+    <div class="login-container">
+        <form action="/submit-your-login-form" method="POST">
+            <h2>Iniciar Sesión</h2>
+            <div class="input-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button class="button" type="submit">Entrar</button>
+        </form>
+        <form action="/submit-your-registration-form" method="POST">
+            <h2>Registrar</h2>
+            <div class="input-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button class="buttonR" type="submit">Registrar</button>
+        </form>
     </div>
-
-    <script>
-        // Selecciona el botón, el input y el div de chat box
-        var button = document.querySelector('.input-box button');
-        var input = document.querySelector('.input-box input');
-        var chatBox = document.querySelector('.chat-box');
-
-        button.addEventListener('click', function () {
-            var inputValue = input.value;
-            if (inputValue.trim() === '') return;  // Evita enviar mensajes vacíos
-
-            // Muestra el mensaje del usuario en la interfaz
-            var userMessage = document.createElement('div');
-            userMessage.textContent = inputValue;
-            userMessage.className = 'sent';  // Añade una clase para estilos
-            chatBox.appendChild(userMessage);
-
-            // Haz la solicitud POST
-            fetch('/api/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ userQuestion: inputValue })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Muestra la respuesta del bot
-                    var botMessage = document.createElement('div');
-                    botMessage.textContent = data.botResponse;  // Accede correctamente a la respuesta
-                    botMessage.className = 'received';  // Añade una clase para estilos
-                    chatBox.appendChild(botMessage);
-                })
-                .catch(error => console.error('Error:', error));  // Añade manejo de errores
-
-            // Limpia el input
-            input.value = '';
-        });
-
-
-    </script>
 </body>
-
 </html>
