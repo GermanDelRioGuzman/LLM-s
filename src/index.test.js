@@ -1,12 +1,14 @@
-require('dotenv').config();
-const index = require('./index');
+const index = require('./index');//import the file we are testing
+require('dotenv').config();//import the dotenv package
 
-test('Funcion 1: guardar mensaje en la base de datos', () => {
-    const resultado = index.saveMessage('input', 'input');
-    expect(resultado).toBe('mensaje guardado');
-    });
+// Test: Function 1: save message to the database
+test('Function 1: save message to the database', () => {
+    const result = index.saveMessage('input', 'input');//call the function we are testing
+    expect(result).toBe('message saved');//check if the result is what we expect
+});
 
-test('Funcion 2: main', () => {
-    const resultado = index.main();
-    expect(resultado).toBe('Server is running on port http://localhost:3000');
-    });
+//Function 2: main to start the server
+test('Function 2: main', () => {
+    const result = index.main();
+    expect(result).toBe('Server is running on port http://localhost:3000');
+});

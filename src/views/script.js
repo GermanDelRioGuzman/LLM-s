@@ -1,19 +1,19 @@
-// Selecciona el botón, el input y el div de chat box
+//This file is used to send the user's question to the server and receive the bot's response to display it in the chat interface.
 var button = document.querySelector('.input-box button');
 var input = document.querySelector('.input-box input');
 var chatBox = document.querySelector('.chat-box');
 
 button.addEventListener('click', function () {
     var inputValue = input.value;
-    if (inputValue.trim() === '') return;  // Evita enviar mensajes vacíos
+    if (inputValue.trim() === '') return;  //Stops the function if the input is empty
 
-    // Muestra el mensaje del usuario en la interfaz
+    // Show the user message in the chat box
     var userMessage = document.createElement('div');
     userMessage.textContent = inputValue;
-    userMessage.className = 'sent';  // Añade una clase para estilos
+    userMessage.className = 'sent';  //Add a class to style the message differently 
     chatBox.appendChild(userMessage);
 
-    // Haz la solicitud POST
+    // Do a POST request to the server with the user question and get the bot response back
     fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -23,14 +23,14 @@ button.addEventListener('click', function () {
     })
         .then(response => response.json())
         .then(data => {
-            // Muestra la respuesta del bot
+            // Show the bot response in the chat box
             var botMessage = document.createElement('div');
-            botMessage.textContent = data.botResponse;  // Accede correctamente a la respuesta
-            botMessage.className = 'received';  // Añade una clase para estilos
+            botMessage.textContent = data.botResponse;  //Add the bot response to the message element
+            botMessage.className = 'received';  //Add a class to style the message differently 
             chatBox.appendChild(botMessage);
         })
-        .catch(error => console.error('Error:', error));  // Añade manejo de errores
+        .catch(error => console.error('Error:', error));  //Add an error message if the request fails 
 
-    // Limpia el input
+    //Clear the input field after sending the message
     input.value = '';
 });
