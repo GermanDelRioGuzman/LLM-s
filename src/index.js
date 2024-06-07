@@ -126,48 +126,6 @@ function saveMessage(userMessage, botResponse) {
 //function to get all the messages from the database and return them as a json object
 app.use(bodyParser.urlencoded({ extended: false }));
 
-db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
-    password TEXT
-)`, (err) => {
-    if (err) {
-        console.error(err.message);
-    }
-});
-
-//function to save the message to the database with the user message and the bot response as parameters
-app.post('/submit-your-login-form', (req, res) => {
-    let sql = `SELECT * FROM users WHERE username = ? AND password = ?`;
-    /* get the user from the database with the username and password from the request body as parameters 
-    and check if the user exists in the database or not and redirect to the home page if the user exists or 
-    send an error message if the user doesn't exist in the database */
-    db.get(sql, [req.body.username, req.body.password], (err, row) => {
-        if (err) {
-            return console.error(err.message);
-        }
-        if (row) {
-            res.redirect('/home.html');
-        } else {
-            res.send('Invalid username or password');
-        }
-    });
-});
-
-//function to get all the messages from the database and return them as a json object
-app.post('/submit-your-registration-form', (req, res) => {
-    let sql = `INSERT INTO users (username, password) VALUES (?, ?)`;
-    /* insert the new user to the database with the username and password from the request body 
-    as parameters and redirect to the home page */
-    db.run(sql, [req.body.username, req.body.password], (err) => {
-      if (err) {
-        return console.error(err.message);
-      }
-      res.redirect('/home.html');
-    });
-  });
-
-
 
 //Assincronic function to start the server 
 async function main() {

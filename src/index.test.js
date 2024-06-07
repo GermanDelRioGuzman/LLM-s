@@ -1,3 +1,4 @@
+const { default: test } = require('node:test');
 const index = require('./index');//import the file we are testing
 require('dotenv').config();//import the dotenv package
 
@@ -11,4 +12,18 @@ test('Function 1: save message to the database', () => {
 test('Function 2: main', () => {
     const result = index.main();
     expect(result).toBe('Server is running on port http://localhost:3000');
+});
+
+
+//function to get all the messages from the database and return them as a json object
+test('Function 3: get all messages from the database', () => {
+    const result = index.getAllMessages();
+    expect(result).toBe('messages returned');
+});
+
+
+//test passport
+test('Function 4: passport', () => {
+    const result = index.passport();
+    expect(result).toBe('passport initialized');
 });
