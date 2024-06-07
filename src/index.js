@@ -7,7 +7,7 @@ const app = express(); //create an express app
 const port = 3000; //create a port
 const sqlite3 = require('sqlite3').verbose(); //import sqlite3
 
-const passport= require('passport');
+const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const { error } = require('console');
@@ -29,7 +29,7 @@ const openai = new OpenAI({
 //this part is for passport microservice
 
 
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser('mi secreto'));
 
@@ -39,35 +39,35 @@ app.use(session({
     saveUninitialized: true
 }));
 
-app.use(passport.initialize());  
+app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new PassportLocal(function(username, password,done){
-    if(username==="codigo" && password === "123")
-        return done(null,{id:1,name:"Cody"});
+passport.use(new PassportLocal(function (username, password, done) {
+    if (username === "codigo" && password === "123")
+        return done(null, { id: 1, name: "Cody" });
 
-    done(null,false);
+    done(null, false);
 }));
 
 
-passport.serializeUser(function(user,done){
-    done(null,user.id);
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
 });
 
 //deserialized
-passport.deserializeUser(function(id,done){
-    done(null,{id:1, name: "Uriel"});
+passport.deserializeUser(function (id, done) {
+    done(null, { id: 1, name: "Uriel" });
 });
 
 
 
-app.set('view engine','ejs');
+app.set('view engine', 'ejs');
 
-app.get("/", (req,res,next)=> {
-    if(req.isAuthenticated()) return next();
+app.get("/", (req, res, next) => {
+    if (req.isAuthenticated()) return next();
 
     res.redirect("/login");
-}, (req,res)=>{
+}, (req, res) => {
 
     //if we start show welcome 
 
@@ -76,14 +76,14 @@ app.get("/", (req,res,next)=> {
     res.redirect("/home");
 })
 
-app.get("/login",(re,res) =>{
+app.get("/login", (re, res) => {
     //show login form
     res.render("login")
 
 })
 
-app.post("/login",passport.authenticate('local',{
-    successRedirect:"/",
+app.post("/login", passport.authenticate('local', {
+    successRedirect: "/",
     failureredirect: "/login"
 }));
 
@@ -101,6 +101,22 @@ let db = new sqlite3.Database('./chatbot.db', (err) => {
     }
     console.log('Connected to the chatbot database.');
 });
+
+//function to clear the database
+function clearDatabase() {
+    db.run(`DELETE FROM conversation`, function (err) {
+        if (err) {
+            return console.error(err.message);
+        }
+        console.log(`All rows have been deleted from the conversation table`);
+    });
+    db.run(`UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE name = 'conversation'`, function (err) {
+        if (err) {
+            return console.error(err.message);
+        }
+        console.log(`The ID counter has been reset`);
+    });
+}
 
 // Create a new table named conversation if it doesn't exist in the database file
 db.run(`CREATE TABLE IF NOT EXISTS conversation (
@@ -129,6 +145,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //Assincronic function to start the server 
 async function main() {
+    clearDatabase(); //here we clear the database
 
     app.use(express.static('views'));//use the views folder
     app.use(express.json());//use json
@@ -174,6 +191,6 @@ async function main() {
 
 }
 
-app.listen(8080,()=> console.log("Server started in http://localhost:8080/login"));
+app.listen(port, () => console.log("Server started in http://localhost:3000/login"));
 
 main() //start the server

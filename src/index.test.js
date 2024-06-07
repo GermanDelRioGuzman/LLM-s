@@ -22,8 +22,16 @@ test('Function 3: get all messages from the database', () => {
 });
 
 
+//test clearDatabase
+test('fucntion 4: clearDatabase', () => {
+    const result = index.clearDatabase();
+    expect(result).toBe('database cleares');
+});
+
 //test passport
-test('Function 4: passport', () => {
+test('Function 5: passport', () => {
     const result = index.passport();
     expect(result).toBe('passport initialized');
 });
+
+
