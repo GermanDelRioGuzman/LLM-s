@@ -14,7 +14,7 @@ Table of Contents
     License
 
 Getting Started
-
+s
 Follow these instructions to get a copy of the project up and running on your local machine.
 Prerequisites
 
@@ -63,7 +63,8 @@ chatbot-app/
 ├── views/
 │   ├── index.ejs
 │   └── login.ejs
-├── app.js
+|   └── home.ejs
+├── index.js
 ├── .env
 ├── package.json
 └── README.md
@@ -73,6 +74,7 @@ HTML Files
 
     index.ejs: The main chat interface.
     login.ejs: The login page.
+    home.ejs:  The chatbot page
 
 CSS File
 
