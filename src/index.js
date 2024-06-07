@@ -94,7 +94,7 @@ app.get("/home", (req, res) => {
 
 
 
-// Connect to the database file and create a new database if it doesn't exist
+// Connect to the database file and create a new database if it doesnt exist
 let db = new sqlite3.Database('./chatbot.db', (err) => {
     if (err) {
         console.error(err.message);
@@ -118,7 +118,7 @@ function clearDatabase() {
     });
 }
 
-// Create a new table named conversation if it doesn't exist in the database file
+// Create a new table named conversation if it doesnt exist in the database file
 db.run(`CREATE TABLE IF NOT EXISTS conversation (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_message TEXT,
