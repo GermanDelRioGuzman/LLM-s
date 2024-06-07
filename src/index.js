@@ -7,6 +7,12 @@ const app = express(); //create an express app
 const port = 3000; //create a port
 const sqlite3 = require('sqlite3').verbose(); //import sqlite3
 
+const passport= require('passport');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const { error } = require('console');
+const PassportLocal = require('passport-local').Strategy;
+
 //middelwares
 app.use(cors());    //use cors
 app.use(bodyParser.json()); //use body-parser
@@ -19,6 +25,74 @@ require('dotenv').config();//import the dotenv package to use the .env file
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
+
+//this part is for passport microservice
+
+
+app.use(express.urlencoded({extended: true}));
+
+app.use(cookieParser('mi secreto'));
+
+app.use(session({
+    secret: 'mi secreto',
+    resave: true,
+    saveUninitialized: true
+}));
+
+app.use(passport.initialize());  
+app.use(passport.session());
+
+passport.use(new PassportLocal(function(username, password,done){
+    if(username==="codigo" && password === "123")
+        return done(null,{id:1,name:"Cody"});
+
+    done(null,false);
+}));
+
+
+passport.serializeUser(function(user,done){
+    done(null,user.id);
+});
+
+//deserialized
+passport.deserializeUser(function(id,done){
+    done(null,{id:1, name: "Uriel"});
+});
+
+
+
+app.set('view engine','ejs');
+
+app.get("/", (req,res,next)=> {
+    if(req.isAuthenticated()) return next();
+
+    res.redirect("/login");
+}, (req,res)=>{
+
+    //if we start show welcome 
+
+
+    //else redirect to home
+    res.redirect("/home");
+})
+
+app.get("/login",(re,res) =>{
+    //show login form
+    res.render("login")
+
+})
+
+app.post("/login",passport.authenticate('local',{
+    successRedirect:"/",
+    failureredirect: "/login"
+}));
+
+app.get("/home", (req, res) => {
+    // Aquí puedes renderizar la vista 'home', si tienes una.
+    res.render("home");
+});
+
+
 
 // Connect to the database file and create a new database if it doesn't exist
 let db = new sqlite3.Database('./chatbot.db', (err) => {
@@ -93,10 +167,6 @@ app.post('/submit-your-registration-form', (req, res) => {
     });
   });
 
-//function to get all the messages from the database and return them as a json object
-app.listen(5050, () => {
-    console.log('Server started on port 3000');
-});
 
 
 //Assincronic function to start the server 
@@ -105,10 +175,6 @@ async function main() {
     app.use(express.static('views'));//use the views folder
     app.use(express.json());//use json
 
-    //start the server on the port 3000 and print a message in the console when the server is running
-    app.listen(port, () => { 
-        console.log(`Server is running on port http://localhost:${port}`)
-    })
 
     let history = [];//create an empty array to store the chat history
 
@@ -149,5 +215,7 @@ async function main() {
 
 
 }
+
+app.listen(8080,()=> console.log("Server started in http://localhost:8080/login"));
 
 main() //start the server
