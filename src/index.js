@@ -1,38 +1,21 @@
-const OpenAI = require("openai");  //import openai
-const express = require('express'); //import express
-const bodyParser = require('body-parser'); //import body-parser
-const cors = require('cors');  //import cors
-
-const app = express(); //create an express app
-const port = 3000; //create a port
-const sqlite3 = require('sqlite3').verbose(); //import sqlite3
-
+const OpenAI = require("openai");
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const sqlite3 = require('sqlite3').verbose();
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const { error } = require('console');
-const PassportLocal = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
 
-//middelwares
-app.use(cors());    //use cors
-app.use(bodyParser.json()); //use body-parser
-app.use(bodyParser.json()); //use body-parser
+const app = express();
+const port = 3000;
 
-
-require('dotenv').config();//import the dotenv package to use the .env file
-
-//new instance of openai with the api key from the .env file
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-})
-
-//this part is for passport microservice
-
-
-app.use(express.urlencoded({ extended: true }));
-
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser('mi secreto'));
-
 app.use(session({
     secret: 'mi secreto',
     resave: true,
@@ -42,59 +25,137 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new PassportLocal(function (username, password, done) {
-    if (username === "codigo" && password === "123")
-        return done(null, { id: 1, name: "Cody" });
+require('dotenv').config();
 
-    done(null, false);
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
+
+let dbR = new sqlite3.Database('./database.db', (err) => {
+    if (err) {
+        console.error(err.message);
+    }
+    console.log('Connected to the users database.');
+});
+
+dbR.run(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL
+)`, (err) => {
+    if (err) {
+        console.error(err.message);
+    }
+    console.log('Created users table.');
+});
+
+passport.use('signup', new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true,
+}, async (req, username, password, done) => {
+    console.log('Signup strategy triggered');
+    dbR.get('SELECT * FROM users WHERE username = ?', [username], async function (err, row) {
+        if (err) { 
+            console.error('Error querying database for signup:', err);
+            return done(err); 
+        }
+        if (row) { 
+            console.log('User already exists during signup');
+            return done(null, false); 
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        dbR.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], function (err) {
+            if (err) { 
+                console.error('Error inserting user into database during signup:', err);
+                return done(err); 
+            }
+            console.log("User created during signup");
+
+            dbR.get('SELECT * FROM users WHERE username = ?', [username], function (err, row) {
+                if (err) { 
+                    console.error('Error querying database for newly created user:', err);
+                    return done(err); 
+                }
+                return done(null, row);
+            });
+        });
+    });
 }));
 
+app.post('/signup', passport.authenticate('signup', {
+    successRedirect: '/home',
+    failureRedirect: '/login',
+}));
+
+passport.use('login', new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'password',
+}, async (username, password, done) => {
+    console.log('Login strategy triggered');
+    dbR.get('SELECT * FROM users WHERE username = ?', [username], async function (err, row) {
+        if (err) { 
+            console.error('Error querying database for login:', err);
+            return done(err); 
+        }
+
+        if (!row) { 
+            console.log('User not found during login');
+            return done(null, false); 
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, row.password);
+        if (!isPasswordValid) { 
+            console.log('Invalid password during login');
+            return done(null, false); 
+        }
+
+        console.log('User authenticated successfully');
+        return done(null, row);
+    });
+}));
+
+app.post('/login', passport.authenticate('login', {
+    successRedirect: '/home',
+    failureRedirect: '/login',
+}));
 
 passport.serializeUser(function (user, done) {
     done(null, user.id);
 });
 
-//deserialized
 passport.deserializeUser(function (id, done) {
-    done(null, { id: 1, name: "Uriel" });
+    dbR.get('SELECT * FROM users WHERE id = ?', [id], function (err, row) {
+        if (err) { 
+            console.error('Error querying database for deserialization:', err);
+            return done(err); 
+        }
+        done(null, row);
+    });
 });
-
-
 
 app.set('view engine', 'ejs');
 
 app.get("/", (req, res, next) => {
     if (req.isAuthenticated()) return next();
-
     res.redirect("/login");
 }, (req, res) => {
-
-    //if we start show welcome 
-
-
-    //else redirect to home
     res.redirect("/home");
-})
+});
 
-app.get("/login", (re, res) => {
-    //show login form
-    res.render("login")
-
-})
-
-app.post("/login", passport.authenticate('local', {
-    successRedirect: "/",
-    failureredirect: "/login"
-}));
+app.get("/login", (req, res) => {
+    res.render("login");
+});
 
 app.get("/home", (req, res) => {
-    // Aquí puedes renderizar la vista 'home', si tienes una.
+    if (!req.isAuthenticated()) {
+        console.log('User not authenticated for /home');
+        return res.redirect('/login');
+    }
     res.render("home");
 });
 
-
-
-// Connect to the database file and create a new database if it doesnt exist
 let db = new sqlite3.Database('./chatbot.db', (err) => {
     if (err) {
         console.error(err.message);
@@ -102,7 +163,6 @@ let db = new sqlite3.Database('./chatbot.db', (err) => {
     console.log('Connected to the chatbot database.');
 });
 
-//function to clear the database
 function clearDatabase() {
     db.run(`DELETE FROM conversation`, function (err) {
         if (err) {
@@ -118,7 +178,6 @@ function clearDatabase() {
     });
 }
 
-// Create a new table named conversation if it doesnt exist in the database file
 db.run(`CREATE TABLE IF NOT EXISTS conversation (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_message TEXT,
@@ -129,7 +188,6 @@ db.run(`CREATE TABLE IF NOT EXISTS conversation (
     }
 });
 
-//function to save the message to the database with the user message and the bot response as parameters
 function saveMessage(userMessage, botResponse) {
     db.run(`INSERT INTO conversation(user_message, bot_response) VALUES(?,?)`, [userMessage, botResponse], function (err) {
         if (err) {
@@ -139,33 +197,21 @@ function saveMessage(userMessage, botResponse) {
     });
 }
 
-//function to get all the messages from the database and return them as a json object
-app.use(bodyParser.urlencoded({ extended: false }));
-
-
-//Assincronic function to start the server 
 async function main() {
-    clearDatabase(); //here we clear the database
+    clearDatabase();
 
-    app.use(express.static('views'));//use the views folder
-    app.use(express.json());//use json
+    app.use(express.static('views'));
+    app.use(express.json());
 
-
-    let history = [];//create an empty array to store the chat history
-
-    //get all the messages from the database and return them as a json object
     app.post('/api/chat', async (req, res) => {
         if (!req.body || !req.body.userQuestion) {
             return res.status(400).json({ error: "Bad Request or missing request" });
         }
 
-        let userQuestion = req.body.userQuestion;//get the user question from the request body
+        let userQuestion = req.body.userQuestion;
+        let messages = [{ role: "user", content: userQuestion }];
 
-        let messages = [{ role: "user", content: userQuestion }];//create an array of messages with the user question
-
-        //try to get the bot response from the openai api and save the user message and the bot response to the database
         try {
-            //get the bot response from the openai api with the user question as a parameter
             const completion = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
                 messages: messages
@@ -175,10 +221,6 @@ async function main() {
             let botResponse = completion.choices[0].message.content;
             saveMessage(userMessage, botResponse);
 
-            history.push(messages[0]);//push the user message to the chat history
-            history.push({ role: "bot", content: botResponse });//push the bot response to the chat history
-
-            //return the bot response as a json object
             res.json({
                 botResponse: botResponse
             });
@@ -187,10 +229,8 @@ async function main() {
             console.error("Error from openai api", error);
         }
     });
-
-
 }
 
-app.listen(port, () => console.log("Server started in http://localhost:3000/login"));
+app.listen(port, () => console.log(`Server started on http://localhost:${port}/login`));
 
-main() //start the server
+main();
