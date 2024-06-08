@@ -56,6 +56,7 @@ File Structure
 
 java
 
+```
 chatbot-app/
 ├── public/
 │   ├── css/
@@ -68,6 +69,7 @@ chatbot-app/
 ├── .env
 ├── package.json
 └── README.md
+```
 
 Code Explanation
 HTML Files
