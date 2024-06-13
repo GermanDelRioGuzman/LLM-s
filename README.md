@@ -1,18 +1,15 @@
-# Chatbot Application README
+# LLM Chatbot Application 
 
-## Introduction
+This repository hosts a straightforward chatbot application developed with HTML, CSS, JavaScript, and Node.js. Users can interact with the bot through a web interface, where the bot utilizes OpenAI's API to respond to queries. The application also includes a login page for user authentication.
 
-This repository contains a simple chatbot application built using HTML, CSS, JavaScript, and Node.js. The chatbot allows users to interact with a bot through a web interface, where the bot responds to user queries by leveraging OpenAI's API. Additionally, a login page is provided for user authentication.
-### Table of Contents
+# Table of Contents
+- [Getting Started](#getting-started)
+- [Prerequisites](#prerequisites)
+- [Usage](#usage)
+- [Technical report](#technical-report)
+- [License](#license)
 
-    Getting Started
-    Prerequisites
-    Installation
-    Usage
-    File Structure
-    Code Explanation
-    Contributing
-    License
+## Prerequisites
 
 ## Getting Started
 s
@@ -53,24 +50,6 @@ bash
     Use the credentials username: codigo and password: 123 to log in.
     Interact with the chatbot on the main page.
 
-## File Structure
-
-java
-
-```
-chatbot-app/
-├── public/
-│   ├── css/
-│   │   └── styles.css
-├── views/
-│   ├── index.ejs
-│   └── login.ejs
-|   └── home.ejs
-├── index.js
-├── .env
-├── package.json
-└── README.md
-```
 
 ## Code Explanation
 ### HTML Files
@@ -94,7 +73,9 @@ chatbot-app/
     Sets up routes for login, authentication, and chat interaction.
     Uses OpenAI API to generate bot responses and stores conversations in an SQLite database.
 
-## Contributing
+## Technical Report
+
+## License
 
 Feel free to fork this repository and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
 License
