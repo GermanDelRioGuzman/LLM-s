@@ -44,10 +44,10 @@ Interact with the chatbot on the main page.
 
 ## Technical Report
 ### Overall Architecture
-https://github.com/GermanDelRioGuzman/LLM-s/blob/main/DiagramaArquitectura.png
+![architecture](/DiagramaArquitectura.png)
 
 ### Overall Database
-https://github.com/GermanDelRioGuzman/LLM-s/blob/main/DiagramasEntidadRelacionDBs.png
+![database](/DiagramasEntidadRelacionDBs.png)
 
 ## License
 Feel free to fork this repository and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
