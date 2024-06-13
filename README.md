@@ -3,75 +3,45 @@
 This repository hosts a straightforward chatbot application developed with HTML, CSS, JavaScript, and Node.js. Users can interact with the bot through a web interface, where the bot utilizes OpenAI's API to respond to queries. The application also includes a login page for user authentication.
 
 # Table of Contents
-- [Getting Started](#getting-started)
+- [Features](#features)
 - [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Technical report](#technical-report)
 - [License](#license)
 
+## Feautures
+- User authentication: SignUp and LogIn 
+- Chatbor interaction: OpenAI API
+- Conversation history: SQLite DB
+- Interface: user-friendly
+
 ## Prerequisites
+Before you begin, ensure you have Docker installed on your system. You can download it from [Docker's website](https://www.docker.com/products/docker-desktop).
 
 ## Getting Started
-s
-Follow these instructions to get a copy of the project up and running on your local machine.
-Prerequisites
+To get the application up and running, follow these steps:
 
-    Node.js
-    npm (Node Package Manager)
-    OpenAI API key
-
-## Installation
-
-    Clone the repository:
-
-    bash
-
-### Install the dependencies:
-
-bash
-
-npm install
-
-Create a .env file in the root directory and add your OpenAI API key:
-
-env
-
-OPENAI_API_KEY=your-openai-api-key
-
-Start the server:
-
-bash
-
-    node app.js
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/GermanDelRioGuzman/LLM-s.git
+   cd LLM-s
+   ```
+2. Start the services using Docker Compose:
+   ```bash
+   docker-compose up --build
+   ```
 
 ## Usage
+1. Start the server:
+   ```bash
+   npm index.js
+   ```
 
-    Navigate to http://localhost:8080/login in your web browser.
-    Use the credentials username: codigo and password: 123 to log in.
-    Interact with the chatbot on the main page.
+Navigate to http://localhost:8080/login in your web browser.
+Use the credentials username: codigo and password: 123 to log in.
+Interact with the chatbot on the main page.
 
-
-## Code Explanation
-### HTML Files
-
-    index.ejs: The main chat interface.
-    login.ejs: The login page.
-    home.ejs:  The chatbot page
-
-### CSS File
-
-    styles.css: Contains styles for both the login and chat pages.
-
-### JavaScript File
-
-    script.js: Handles user input, sends it to the server, and displays the bot's response.
-
-### Server-side Code (app.js)
-
-    Imports necessary packages like express, body-parser, cors, passport, sqlite3, and openai.
-    Configures middleware for Express, including static file serving, JSON parsing, session management, and user authentication.
-    Sets up routes for login, authentication, and chat interaction.
-    Uses OpenAI API to generate bot responses and stores conversations in an SQLite database.
 
 ## Technical Report
 
