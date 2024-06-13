@@ -42,11 +42,14 @@ Navigate to http://localhost:8080/login in your web browser.
 Use the credentials username: codigo and password: 123 to log in.
 Interact with the chatbot on the main page.
 
-
 ## Technical Report
+### Overall Architecture
+https://github.com/GermanDelRioGuzman/LLM-s/blob/main/DiagramaArquitectura.png
+
+### Overall Database
+https://github.com/GermanDelRioGuzman/LLM-s/blob/main/DiagramasEntidadRelacionDBs.png
 
 ## License
-
 Feel free to fork this repository and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
 License
 
