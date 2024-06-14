@@ -23,7 +23,7 @@ test('Function 3: get all messages from the database', () => {
 
 
 //test clearDatabase
-test('fucntion 4: clearDatabase', () => {
+test('function 4: clearDatabase', () => {
     const result = index.clearDatabase();
     expect(result).toBe('database cleares');
 });
