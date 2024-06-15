@@ -1,8 +1,19 @@
-# syntax=docker/dockerfile:1
+#we are gonna use node.js runtime as the base image
 FROM node:14
-WORKDIR /code
+
+#set the working directory
+WORKDIR /usr/src/app
+
+#copy the package.json and package-lock.json
 COPY package*.json ./
+
+#gonna install the dependencies
 RUN npm install
-EXPOSE 5000
+
+# copy the rest of the application code
 COPY . .
-CMD ["node", "index.js"]
+
+#this is the port on my web runs
+
+#this is the terminal command torun the web
+CMD ["node","src/app/index.js"]
