@@ -1,8 +1,1 @@
-# This is a simple example of a docker-compose file
-services:
-  web:
-    build: .
-    ports:
-      - "8000:5000"
-  redis:
-    image: "redis:alpine"
+a
