@@ -4,6 +4,7 @@
   "description": "implementation of a LLM's in a chatbot",
   "main": "index.js",
   "scripts": {
+    "start":"node src/index.js",
     "test": "jest"
   },
   "keywords": [],
