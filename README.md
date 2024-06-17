@@ -58,4 +58,4 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ![docker](/container.png)
 
 ## docker-compose.yml 
-Remember to put your api key in this file to work properly, and test the container
+Remember to put your api key in this file to work properly and create the enviroment file (.env) with OPENAI_API_KEY variable, and test the container
