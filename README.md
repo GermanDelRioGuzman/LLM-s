@@ -54,3 +54,23 @@ Feel free to fork this repository and submit pull requests. For major changes, p
 License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
+## To Dockerize the web app you need to...
+create a file called docker-compose.yml and put the next code
+
+```bash
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app_node_modules
+      - ./data:/usr/src/app/data
+    environment:
+      NODE_ENV: development
+      OPENAI_API_KEY: sk-proj-KJPGg77gFG4U4BVcY2YUT3BlbkFJh28WESg6r7W8otJi6m7P
+    command: npm start
+```
+and after that you could dockerize the web app 
