@@ -70,7 +70,7 @@ services:
       - ./data:/usr/src/app/data
     environment:
       NODE_ENV: development
-      OPENAI_API_KEY: sk-proj-KJPGg77gFG4U4BVcY2YUT3BlbkFJh28WESg6r7W8otJi6m7P
+      OPENAI_API_KEY: your api key here
     command: npm start
 ```
 and after that you could dockerize the web app 
