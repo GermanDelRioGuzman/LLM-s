@@ -15,5 +15,5 @@ COPY . .
 
 #this is the port on my web runs
 
-#this is the terminal command torun the web
+#this is the terminal command to run the web
 CMD ["node","src/app/index.js"]
