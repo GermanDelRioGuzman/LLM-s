@@ -69,7 +69,7 @@ services:
       - /usr/src/app_node_modules
       - ./data:/usr/src/app/data
     environment:
-      
+      NODE_ENV: development
       #put your api key here 
     command: npm start
 ```
