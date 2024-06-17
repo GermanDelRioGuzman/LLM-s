@@ -14,6 +14,7 @@ RUN npm install
 COPY . .
 
 #this is the port on my web runs
+EXPOSE 3000
 
 #this is the terminal command to run the web
-CMD ["node","src/app/index.js"]
+CMD ["node","src/index.js"]

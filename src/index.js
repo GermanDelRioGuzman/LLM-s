@@ -8,9 +8,15 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
+const path = require('path');
 
 const app = express();
 const port = 3000;
+
+// Set the views directory
+app.set('views', path.join(__dirname, 'views'));
+
+app.set('view engine', 'ejs');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -135,7 +141,6 @@ passport.deserializeUser(function (id, done) {
     });
 });
 
-app.set('view engine', 'ejs');
 
 app.get("/", (req, res, next) => {
     if (req.isAuthenticated()) return next();
