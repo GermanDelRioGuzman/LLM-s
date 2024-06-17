@@ -10,5 +10,5 @@ services:
       - ./data:/usr/src/app/data
     environment:
       NODE_ENV: development
-      OPENAI_API_KEY: here your api key
+      OPENAI_API_KEY: your api key goes here
     command: npm start

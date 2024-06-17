@@ -55,4 +55,7 @@ License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 ## web dockerized
-![docker](/Container.png)
+![docker](/container.png)
+
+## docker-compose.yml 
+Remember to put your api key in this file to work properly, and test the container

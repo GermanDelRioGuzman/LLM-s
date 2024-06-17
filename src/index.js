@@ -15,6 +15,8 @@ const port = 3000;
 
 // Set the views directory
 app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'views')));
+
 
 app.set('view engine', 'ejs');
 
